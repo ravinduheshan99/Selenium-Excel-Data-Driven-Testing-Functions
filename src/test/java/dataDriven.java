@@ -10,19 +10,19 @@ public class dataDriven {
 
 	public static void main(String[] args) throws IOException {
 		
-		//After you grab purchase testcase row = pull all the data of that row and feed into test
-		
+		// Load Excel file
 		FileInputStream fis = new FileInputStream("D:\\Documents\\Career\\My Projects\\Selenium Projects\\06-Selenium-Excel-Data-Driven-Testing-Functions\\ExcelDriven\\Test Data\\Test Data.xlsx");
-		XSSFWorkbook workbook = new XSSFWorkbook(fis);
-		
-		int sheetCount = workbook.getNumberOfSheets();
+		XSSFWorkbook workbook = new XSSFWorkbook(fis); // Create workbook instance
+		int sheetCount = workbook.getNumberOfSheets(); // Get number of sheets
 		
 		for(int i=0; i<sheetCount; i++) {
 			if(workbook.getSheetName(i).equalsIgnoreCase("Sheet1")) {
+				
 				XSSFSheet mySheet =  workbook.getSheetAt(i);
-				//Identify testcase column by scanning the entire 1st row
+				
+				// Identify "Test Cases" column
 				Iterator<Row> rows = mySheet.iterator();
-				Row firstrow = rows.next(); //Comes to the header row
+				Row firstrow = rows.next();
 				Iterator<Cell> cell= firstrow.cellIterator();
 				
 				int k=0;
@@ -31,17 +31,25 @@ public class dataDriven {
 				while(cell.hasNext()) {
 					Cell cellValue = cell.next();
 					if(cellValue.getStringCellValue().equalsIgnoreCase("Test Cases")) {
-						columnIndex=k;
+						columnIndex=k; // Found "Test Cases" column
 					}
-					
 					k++;
 				}
-				System.out.println(columnIndex);
+				System.out.println("Column Index : "+columnIndex);
 				
-				//Once column is identified then scan entire testcase column to identify purchase testcase row
+				
+				// Ready to scan rows for specific test cases
+				while(rows.hasNext()) {
+					Row r = rows.next();
+					if(r.getCell(columnIndex).getStringCellValue().equalsIgnoreCase("Purchase")) {
+						Iterator<Cell> cv = r.cellIterator();
+						
+						while(cv.hasNext()) {
+							System.out.println(cv.next().getStringCellValue());
+						}
+					}
+				}
 			}
 		}
-
 	}
-
 }
