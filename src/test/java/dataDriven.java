@@ -3,7 +3,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -19,13 +21,14 @@ public class dataDriven {
 		int sheetCount = workbook.getNumberOfSheets(); // Get number of sheets
 		
 		for(int i=0; i<sheetCount; i++) {
+			// Find the sheet named "Sheet1"
 			if(workbook.getSheetName(i).equalsIgnoreCase("Sheet1")) {
 				
-				XSSFSheet mySheet =  workbook.getSheetAt(i);
+				XSSFSheet mySheet =  workbook.getSheetAt(i); // Access the matched sheet
 				
 				// Identify "Test Cases" column
 				Iterator<Row> rows = mySheet.iterator();
-				Row firstrow = rows.next();
+				Row firstrow = rows.next(); // Read the header row
 				Iterator<Cell> cell= firstrow.cellIterator();
 				
 				int k=0;
@@ -48,7 +51,13 @@ public class dataDriven {
 						// Store all cell values from the matched row
 						Iterator<Cell> cv = r.cellIterator();
 						while(cv.hasNext()) {
-							arrayList.add(cv.next().getStringCellValue());
+							Cell c = cv.next();
+							// Convert and add both string and numeric values
+							if(c.getCellType()==CellType.STRING) {
+								arrayList.add(c.getStringCellValue());
+							}else {
+								arrayList.add(NumberToTextConverter.toText(c.getNumericCellValue()));
+							}
 						}
 					}
 				}
