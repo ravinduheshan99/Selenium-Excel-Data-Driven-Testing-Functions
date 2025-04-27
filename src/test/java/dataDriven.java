@@ -1,5 +1,6 @@
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -7,9 +8,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class dataDriven {
+	
+	public ArrayList<String> getData(String testCaseName) throws IOException {
+		// Create a list to store cell data of the matching test case
+		ArrayList<String> arrayList = new ArrayList<String>();
 
-	public static void main(String[] args) throws IOException {
-		
 		// Load Excel file
 		FileInputStream fis = new FileInputStream("D:\\Documents\\Career\\My Projects\\Selenium Projects\\06-Selenium-Excel-Data-Driven-Testing-Functions\\ExcelDriven\\Test Data\\Test Data.xlsx");
 		XSSFWorkbook workbook = new XSSFWorkbook(fis); // Create workbook instance
@@ -37,19 +40,25 @@ public class dataDriven {
 				}
 				System.out.println("Column Index : "+columnIndex);
 				
-				
-				// Ready to scan rows for specific test cases
+				// Scan rows for a match with the given test case name
 				while(rows.hasNext()) {
 					Row r = rows.next();
-					if(r.getCell(columnIndex).getStringCellValue().equalsIgnoreCase("Purchase")) {
-						Iterator<Cell> cv = r.cellIterator();
+					if(r.getCell(columnIndex).getStringCellValue().equalsIgnoreCase(testCaseName)) {
 						
+						// Store all cell values from the matched row
+						Iterator<Cell> cv = r.cellIterator();
 						while(cv.hasNext()) {
-							System.out.println(cv.next().getStringCellValue());
+							arrayList.add(cv.next().getStringCellValue());
 						}
 					}
 				}
 			}
 		}
+		return arrayList;
+	}
+
+	public static void main(String[] args) throws IOException {
+		
+		
 	}
 }
